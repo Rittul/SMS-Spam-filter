@@ -75,17 +75,17 @@ plt.show()
 # stemming
 
 def text_transform(text):
-    text= text.lower()
+    text= text.lower()    #for lower case
     text=nltk.word_tokenize(text)
     y=[]
-    for i in text:
+    for i in text:               #removing special chars
         if i.isalnum():
             y.append(i)
     
     text=y[:]
     y.clear()
     
-    for i in text:
+    for i in text:       #removing stop words which help in sentence formation only only in on etc.
         if i not in stopwords.words('english') and i not in string.punctuation:
             y.append(i)
             
@@ -94,9 +94,25 @@ def text_transform(text):
     
     ps=PorterStemmer()
     
-    for i in text:
+    for i in text:           #making it stemming like dancing danced as dance only
         y.append(ps.stem(i))
             
     return " ".join(y)
+
+
+df['transformed_text']= df['text'].apply(text_transform)
+
+
+# MODEL BIUILDING
+
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.model_selection import train_test_split
+from sklearn.naive_bayes import GaussianNB, BernoulliNB,MultinomialNB
+from sklearn.metrics import confusion_matrix,precision_score,accuracy_score
+
+tfidf=TfidfVectorizer()
+
+X=tfidf.fit_transform(df['transformed_text']).toarray()
+y=df['target'].values
 
 
