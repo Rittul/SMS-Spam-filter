@@ -35,10 +35,10 @@ print(df.shape)
 
 # EDA
 
-# df['target'].value_counts().plot.pie(autopct='%1.2f%%')
-# plt.title("ham and spam distribution")
-# plt.legend()
-# plt.show()
+df['target'].value_counts().plot.pie(autopct='%1.2f%%')
+plt.title("ham and spam distribution")
+plt.legend()
+plt.show()
 
 
 
@@ -53,8 +53,8 @@ print(df[df['target'] == 'ham'][['num_chars','num_sen','num_words']].describe())
 print(df[df['target'] == 'spam'][['num_chars','num_sen','num_words']].describe())
 
 
-# sns.pairplot(df,hue='target')
-# plt.show()
+sns.pairplot(df,hue='target')
+plt.show()
 
 
 # Encoding data for ham and spma so that the machine can understand
@@ -114,5 +114,68 @@ tfidf=TfidfVectorizer()
 
 X=tfidf.fit_transform(df['transformed_text']).toarray()
 y=df['target'].values
+
+
+X_train, X_test, y_train, y_test=train_test_split(X,y,test_size=0.2,random_state=2)
+
+gnb=GaussianNB()
+bnb=BernoulliNB()
+mnb=MultinomialNB()
+
+
+
+print("\nmodel 1: ")
+gnb.fit(X_train,y_train)
+y_pred1=gnb.predict(X_test)
+print("model accuracy",gnb.score(X_test,y_test))
+print("model precission score: ",precision_score(y_test,y_pred1))
+print("confusion matrix: ",confusion_matrix(y_test,y_pred1))
+
+
+print("\nmodel 2: ")
+bnb.fit(X_train,y_train)    #this model gives the best score out of every one here
+y_pred2=bnb.predict(X_test)
+print("model accuracy",bnb.score(X_test,y_test))
+print("model precission score: ",precision_score(y_test,y_pred2))
+print("confusion matrix: ",confusion_matrix(y_test,y_pred2))
+
+
+print("\nmodel 3: ")
+mnb.fit(X_train,y_train)
+y_pred2=mnb.predict(X_test)
+print("model accuracy",mnb.score(X_test,y_test))
+print("model precission score: ",precision_score(y_test,y_pred2))
+print("confusion matrix: ",confusion_matrix(y_test,y_pred2))
+
+
+
+import pickle
+
+with open("spam_model.pkl","wb") as f:
+    pickle.dump(bnb,f)
+    
+with open("vectorizer.pkl","wb") as f:
+    pickle.dump(tfidf,f)
+    
+
+
+
+# model 1:
+# model accuracy 0.8762088974854932
+# model precission score:  0.5231481481481481
+# confusion matrix:  [[793 103]
+#  [ 25 113]]
+
+# model 2:
+# model accuracy 0.9700193423597679
+# model precission score:  0.9734513274336283
+# confusion matrix:  [[893   3]
+#  [ 28 110]]
+
+# model 3:
+# model accuracy 0.9593810444874274
+# model precission score:  1.0
+# confusion matrix:  [[896   0]
+#  [ 42  96]]
 
 
