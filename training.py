@@ -152,7 +152,7 @@ print("confusion matrix: ",confusion_matrix(y_test,y_pred2))
 import pickle
 
 with open("spam_model.pkl","wb") as f:
-    pickle.dump(bnb,f)
+    pickle.dump(mnb,f)
     
 with open("vectorizer.pkl","wb") as f:
     pickle.dump(tfidf,f)

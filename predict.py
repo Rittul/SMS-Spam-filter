@@ -7,7 +7,7 @@ from nltk.stem.porter import PorterStemmer
 nltk.download('stopwords')
 
 with open("spam_model.pkl", "rb") as f:
-    bnb = pickle.load(f)
+    mnb = pickle.load(f)
 
 with open("vectorizer.pkl", "rb") as f:
     tfidf = pickle.load(f)
@@ -48,7 +48,7 @@ tranformed_message=text_transform(messege)
 
 input_message=tfidf.transform([tranformed_message]).toarray()
 
-prediction=bnb.predict(input_message)
+prediction=mnb.predict(input_message)
 
 if prediction[0]==1:
     print("SPAM")
